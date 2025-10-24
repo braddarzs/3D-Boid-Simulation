@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: SouthMagnet
   m_EditorClassIdentifier: 
   pole: 1
-  magneticForce: 1081.2
+  magneticForce: 18.09
