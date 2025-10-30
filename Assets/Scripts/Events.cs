@@ -5,5 +5,4 @@ using UnityEngine;
 
 public static class Events
 {
-    public static Func<List<Boid>> GetBoids;
 }
