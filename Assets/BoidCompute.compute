@@ -1,111 +1,60 @@
-// BoidCompute.compute
-// Simulates boid behavior on GPU
-
 #pragma kernel CSMain
 
-// -------- Structs --------
-struct BoidData
+static const int threadGroupSize = 1024;
+
+struct Boid
 {
     float3 position;
-    float3 velocity;
+    float3 direction;
+
+    float3 alignmentForce;
+    float3 cohesionForce;
+    float3 seperationForce;
+    int numFlockmates;
+    
+    float viewRadius;
+    float viewAngle;
+    float separationRange;
+    
+    int boidType;
 };
 
-// -------- Buffers --------
-RWStructuredBuffer<BoidData> _Boids;
+RWStructuredBuffer<Boid> boids;
+uint _BoidCount;
 
-// -------- Parameters --------
-float _DeltaTime;
-float _ViewRadius;
-float _ViewAngle;
-float _SeparationRange;
-float _MoveSpeed;
-float _SeparationStrength;
-float _AlignmentStrength;
-float _CohesionStrength;
-float _TargetStrength;
-float3 _TargetPosition;
-float3 _Bounds;
-int _BoidCount;
-
-// Each thread simulates one boid
-[numthreads(256, 1, 1)]
+[numthreads(threadGroupSize, 1, 1)]
 void CSMain(uint3 id : SV_DispatchThreadID)
 {
-    uint i = id.x;
-    if (i >= _BoidCount)
-        return;
 
-    // Load current boid
-    BoidData boid = _Boids[i];
+    Boid currentBoid = boids[id.x];
 
-    float3 separation = 0;
-    float3 alignment = 0;
-    float3 cohesion = 0;
-    int neighborCount = 0;
-
-    // Loop through all boids (O(n^2) — fine up to a few thousand)
     for (uint j = 0; j < _BoidCount; j++)
     {
-        if (i == j)
-            continue;
+        if (id.x == j) continue;
 
-        BoidData other = _Boids[j];
-        float3 offset = boid.position - other.position;
+        Boid other = boids[j];
+        float3 offset = currentBoid.position - other.position;
         float dist = length(offset);
 
-        if (dist == 0 || dist > _ViewRadius)
+        if (dist == 0 || dist > currentBoid.viewRadius)
             continue;
 
-        // View angle limit
-        float angle = degrees(acos(dot(normalize(boid.velocity), normalize(offset))));
-        if (angle > _ViewAngle * 0.5f)
+        float angle = degrees(acos(dot(normalize(currentBoid.direction), normalize(offset))));
+        if (angle > currentBoid.viewAngle * 0.5f)
             continue;
+        
+        //if (currentBoid.boidType != other.boidType)
+           // continue;
 
-        neighborCount++;
+        currentBoid.numFlockmates += 1;
 
-        // Separation — avoid crowding
-        if (dist <= _SeparationRange)
-            separation += normalize(offset) / dist;
+        if (dist <= currentBoid.separationRange)
+            currentBoid.seperationForce += normalize(offset) / dist;
 
-        // Alignment — match direction
-        alignment += normalize(other.velocity);
+        currentBoid.alignmentForce += normalize(other.direction);
 
-        // Cohesion — move toward average neighbor position
-        cohesion += other.position;
+        currentBoid.cohesionForce += other.position;
     }
-
-    // Move toward target
-    float3 desired = normalize(_TargetPosition - boid.position) * _TargetStrength;
-
-    if (neighborCount > 0)
-    {
-        desired += normalize(separation / neighborCount) * _SeparationStrength;
-        desired += normalize(alignment / neighborCount) * _AlignmentStrength;
-        float3 avgPos = cohesion / neighborCount;
-        desired += normalize(avgPos - boid.position) * _CohesionStrength;
-    }
-
-    // Blend toward desired direction smoothly
-    desired = normalize(desired);
-    boid.velocity = lerp(boid.velocity, desired * _MoveSpeed, _DeltaTime * 10.0);
-    boid.position += boid.velocity * _DeltaTime;
-
-    // ---- World wrapping (same as your C# WrapPosition) ----
-    if (boid.position.x > _Bounds.x)
-        boid.position.x = -_Bounds.x;
-    else if (boid.position.x < -_Bounds.x)
-        boid.position.x = _Bounds.x;
-
-    if (boid.position.y > _Bounds.y)
-        boid.position.y = -_Bounds.y;
-    else if (boid.position.y < -_Bounds.y)
-        boid.position.y = _Bounds.y;
-
-    if (boid.position.z > _Bounds.z)
-        boid.position.z = -_Bounds.z;
-    else if (boid.position.z < -_Bounds.z)
-        boid.position.z = _Bounds.z;
-
-    // Write back updated data
-    _Boids[i] = boid;
+    
+    boids[id.x] = currentBoid;
 }
