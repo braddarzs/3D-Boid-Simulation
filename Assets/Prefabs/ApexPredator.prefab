@@ -101,16 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boidManager: {fileID: 0}
-  viewRadius: 10
-  viewAngle: 360
-  moveSpeed: 2
-  seperationRange: 1
-  separationStrength: 5
-  alignmentStrength: 5
-  cohesionStrength: 5
-  targetStrength: 0
-  obstacleAvoidanceDistance: 10
-  turnSpeed: 2.5
+  boidSettings: {fileID: 11400000, guid: 7d08d865b98f97a44928d07390c6c1aa, type: 2}
   separationForce: {x: 0, y: 0, z: 0}
   alignmentForce: {x: 0, y: 0, z: 0}
   cohesionForce: {x: 0, y: 0, z: 0}

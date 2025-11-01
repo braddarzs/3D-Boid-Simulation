@@ -9,16 +9,7 @@ public class Boid : MonoBehaviour
     [SerializeField] BoidManager boidManager;
     Vector3 velocity;
 
-    public float viewRadius = 5f;
-    public float viewAngle = 120f;
-    public float moveSpeed = 5f;
-    public float seperationRange = 2f;
-    public float separationStrength = 5f;
-    public float alignmentStrength = 5f;
-    public float cohesionStrength = 5f;
-    public float targetStrength = 5f;
-    public float obstacleAvoidanceDistance = 3f;
-    public float turnSpeed = 10f;
+    public BoidSettings boidSettings;
 
     public Vector3 separationForce = Vector3.zero;
     public Vector3 alignmentForce = Vector3.zero;
@@ -27,28 +18,31 @@ public class Boid : MonoBehaviour
 
     public LayerMask obstacleLayer;
     public int boidType;
+
     public void UpdateBoid()
     {
         //Initial Direction
-        Vector3 desiredDirection = (boidManager.targetCube.transform.position - transform.position).normalized * targetStrength;
+        Vector3 desiredDirection = (boidManager.targetCube.transform.position - transform.position).normalized * boidSettings.targetStrength;
         if (desiredDirection == Vector3.zero) desiredDirection = transform.forward;
 
         //Seperation 
-        desiredDirection += ((separationForce / neighborCount).normalized) * separationStrength;
+        desiredDirection += ((separationForce / neighborCount).normalized) * boidSettings.separationStrength;
 
         //Alignment
-        desiredDirection += ((alignmentForce / neighborCount).normalized) * alignmentStrength;
+        desiredDirection += ((alignmentForce / neighborCount).normalized) * boidSettings.alignmentStrength;
 
         //Cohesion
         Vector3 averageNeighbourPos = cohesionForce / neighborCount;
-        desiredDirection += ((averageNeighbourPos - transform.position).normalized) * cohesionStrength;
+        desiredDirection += ((averageNeighbourPos - transform.position).normalized) * boidSettings.cohesionStrength;
 
         //Obstacle Avoidance
-        desiredDirection = ObjectAvoidanceDirection(desiredDirection, 50);
+        desiredDirection = ObjectAvoidanceDirection(desiredDirection, 20);
+
+        if(Random.Range(0f,1f) <= 0.05f) desiredDirection += Random.insideUnitSphere * 3f;
 
         desiredDirection.Normalize();
 
-        velocity = Vector3.Lerp(velocity, desiredDirection * moveSpeed, Time.deltaTime * turnSpeed);
+        velocity = Vector3.Lerp(velocity, desiredDirection * boidSettings.moveSpeed, Time.deltaTime * boidSettings.turnSpeed);
 
         transform.position += velocity * Time.deltaTime;
 
@@ -59,7 +53,7 @@ public class Boid : MonoBehaviour
     {
         if (desiredDir == Vector3.zero) return desiredDir;
         RaycastHit hit;
-        if (!Physics.Raycast(transform.position, desiredDir, out hit, obstacleAvoidanceDistance, obstacleLayer)) return desiredDir;
+        if (!Physics.Raycast(transform.position, desiredDir, out hit, boidSettings.obstacleAvoidanceDistance, obstacleLayer)) return desiredDir;
 
         float phi = Mathf.PI * (3f - Mathf.Sqrt(5f));
 
@@ -78,7 +72,7 @@ public class Boid : MonoBehaviour
             Vector3 sampleDir = new Vector3(x, y, z);
             sampleDir = Quaternion.FromToRotation(Vector3.forward, desiredDir) * sampleDir;
 
-            if (!Physics.Raycast(transform.position, sampleDir, out hit, obstacleAvoidanceDistance, obstacleLayer))
+            if (!Physics.Raycast(transform.position, sampleDir, out hit, boidSettings.obstacleAvoidanceDistance, obstacleLayer))
             {
                 float score = Vector3.Dot(desiredDir, sampleDir);
                 if (score > bestScore)

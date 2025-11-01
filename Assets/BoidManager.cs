@@ -42,9 +42,9 @@ public class BoidManager : MonoBehaviour
         {
             boidData[i].position = boids[i].transform.position;
             boidData[i].direction = boids[i].transform.forward;
-            boidData[i].viewRadius = boids[i].viewRadius;
-            boidData[i].viewAngle = boids[i].viewAngle;
-            boidData[i].separationRange = boids[i].seperationRange;
+            boidData[i].viewRadius = boids[i].boidSettings.viewRadius;
+            boidData[i].viewAngle = boids[i].boidSettings.viewAngle;
+            boidData[i].separationRange = boids[i].boidSettings.seperationRange;
             boidData[i].boidType = boids[i].boidType;
         }
 
