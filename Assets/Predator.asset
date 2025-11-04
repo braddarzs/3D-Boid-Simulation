@@ -16,9 +16,9 @@ MonoBehaviour:
   viewAngle: 270
   moveSpeed: 4
   seperationRange: 10
-  separationStrength: 5
+  separationStrength: 5.5
   alignmentStrength: 5
   cohesionStrength: 5
-  targetStrength: 5
+  targetStrength: 0
   obstacleAvoidanceDistance: 8
   turnSpeed: 5

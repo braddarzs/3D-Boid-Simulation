@@ -15,7 +15,7 @@ MonoBehaviour:
   viewRadius: 3
   viewAngle: 250
   moveSpeed: 7
-  seperationRange: 3
+  seperationRange: 4
   separationStrength: 5
   alignmentStrength: 5
   cohesionStrength: 5
