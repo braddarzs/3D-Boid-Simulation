@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewRadius: 10
   viewAngle: 250
-  moveSpeed: 2
+  minSpeed: 1
+  maxSpeed: 1
   seperationRange: 15
   separationStrength: 5.5
   alignmentStrength: 5
   cohesionStrength: 5
   targetStrength: 0
+  objectAvoidanceStrength: 10
   obstacleAvoidanceDistance: 10
   turnSpeed: 2

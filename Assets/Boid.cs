@@ -26,34 +26,53 @@ public class Boid : MonoBehaviour
         if (desiredDirection == Vector3.zero) desiredDirection = transform.forward;
 
         //Seperation 
-        desiredDirection += ((separationForce / neighborCount).normalized) * boidSettings.separationStrength;
+        desiredDirection += (separationForce.normalized) * boidSettings.separationStrength;
 
         //Alignment
-        desiredDirection += ((alignmentForce / neighborCount).normalized) * boidSettings.alignmentStrength;
+        desiredDirection += (alignmentForce.normalized) * boidSettings.alignmentStrength;
 
         //Cohesion
         Vector3 averageNeighbourPos = cohesionForce / neighborCount;
         desiredDirection += ((averageNeighbourPos - transform.position).normalized) * boidSettings.cohesionStrength;
 
         //Obstacle Avoidance
-        desiredDirection = ObjectAvoidanceDirection(desiredDirection, 20);
-
-        if(Random.Range(0f,1f) <= 0.05f) desiredDirection += Random.insideUnitSphere * 3f;
+        if(isDirectionObstructed(desiredDirection))
+        {
+            desiredDirection += ObjectAvoidanceDirection(desiredDirection, 20).normalized * boidSettings.objectAvoidanceStrength;
+        }
 
         desiredDirection.Normalize();
 
-        velocity = Vector3.Lerp(velocity, desiredDirection * boidSettings.moveSpeed, Time.deltaTime * boidSettings.turnSpeed);
+        Vector3 desiredVelocity = desiredDirection * boidSettings.maxSpeed;
+
+        Vector3 acceleration = (desiredVelocity - velocity) * boidSettings.turnSpeed;
+
+        velocity += acceleration * Time.deltaTime;
+        float speed = velocity.magnitude;
+        Vector3 dir = velocity / speed;
+        speed = Mathf.Clamp(speed, boidSettings.minSpeed, boidSettings.maxSpeed);
+        velocity = dir * speed;
 
         transform.position += velocity * Time.deltaTime;
+        transform.forward = dir;
+    }
 
-        transform.forward = velocity.normalized;
+
+    private bool isDirectionObstructed(Vector3 desiredDir)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, desiredDir, out hit, boidSettings.obstacleAvoidanceDistance, obstacleLayer))
+        {
+            return true;
+        }
+        return false;
     }
 
     public Vector3 ObjectAvoidanceDirection(Vector3 desiredDir, int maxSamples)
     {
         if (desiredDir == Vector3.zero) return desiredDir;
         RaycastHit hit;
-        if (!Physics.Raycast(transform.position, desiredDir, out hit, boidSettings.obstacleAvoidanceDistance, obstacleLayer)) return desiredDir;
+        float maxDist = boidSettings.obstacleAvoidanceDistance;
 
         float phi = Mathf.PI * (3f - Mathf.Sqrt(5f));
 
@@ -72,7 +91,11 @@ public class Boid : MonoBehaviour
             Vector3 sampleDir = new Vector3(x, y, z);
             sampleDir = Quaternion.FromToRotation(Vector3.forward, desiredDir) * sampleDir;
 
-            if (!Physics.Raycast(transform.position, sampleDir, out hit, boidSettings.obstacleAvoidanceDistance, obstacleLayer))
+            bool sampleHit = Physics.Raycast(transform.position, sampleDir, out hit, maxDist, obstacleLayer);
+
+            //Debug.DrawRay(transform.position, sampleDir.normalized * maxDist, sampleHit ? Color.red : Color.green);
+
+            if (!sampleHit)
             {
                 float score = Vector3.Dot(desiredDir, sampleDir);
                 if (score > bestScore)

@@ -15,10 +15,10 @@ public class BoidManager : MonoBehaviour
     [Header("Boid Variables")]
     ComputeBuffer boidBuffer;
     int threadGroups;
+    BoidData[] boidData;
 
     private void Start()
     {
-
         GameObject[] boidObjects = GameObject.FindGameObjectsWithTag("Boid");
         boids = new Boid[boidObjects.Length];
 
@@ -26,7 +26,7 @@ public class BoidManager : MonoBehaviour
         {
             boids[i] = boidObjects[i].GetComponent<Boid>();
         }
-
+        boidData = new BoidData[boids.Length];
         int stride = Marshal.SizeOf(typeof(BoidData));
         boidBuffer = new ComputeBuffer(boids.Length, stride);
 
@@ -36,16 +36,18 @@ public class BoidManager : MonoBehaviour
 
     private void Update()
     {
-        BoidData[] boidData = new BoidData[boids.Length];
-
         for (int i = 0; i < boids.Length; i++)
         {
-            boidData[i].position = boids[i].transform.position;
-            boidData[i].direction = boids[i].transform.forward;
-            boidData[i].viewRadius = boids[i].boidSettings.viewRadius;
-            boidData[i].viewAngle = boids[i].boidSettings.viewAngle;
-            boidData[i].separationRange = boids[i].boidSettings.seperationRange;
-            boidData[i].boidType = boids[i].boidType;
+            Boid boid = boids[i];
+            boidData[i] = new BoidData
+            {
+                position = boid.transform.position,
+                direction = boid.transform.forward,
+                viewRadius = boid.boidSettings.viewRadius,
+                viewAngle = boid.boidSettings.viewAngle,
+                separationRange = boid.boidSettings.seperationRange,
+                boidType = boid.boidType
+            };
         }
 
         boidBuffer.SetData(boidData);
@@ -58,12 +60,13 @@ public class BoidManager : MonoBehaviour
 
         for (int i = 0; i < boids.Length; i++)
         {
-            boids[i].alignmentForce = boidData[i].alignmentForce;
-            boids[i].cohesionForce = boidData[i].cohesionForce;
-            boids[i].separationForce = boidData[i].seperationForce;
-            boids[i].neighborCount = boidData[i].numFlockmates;
+            Boid boid = boids[i];
+            boid.alignmentForce = boidData[i].alignmentForce;
+            boid.cohesionForce = boidData[i].cohesionForce;
+            boid.separationForce = boidData[i].seperationForce;
+            boid.neighborCount = boidData[i].numFlockmates;
 
-            boids[i].UpdateBoid();
+            boid.UpdateBoid();
         }
     }
 
