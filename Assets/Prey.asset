@@ -12,15 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3da71582ff106f54aa7dd4e1739c880e, type: 3}
   m_Name: Prey
   m_EditorClassIdentifier: 
+  TurnRate: 5
   viewRadius: 2
-  viewAngle: 360
-  minSpeed: 3
+  viewAngle: 250
+  minSpeed: 2
   maxSpeed: 7
   seperationRange: 2
-  separationStrength: -8.3
+  separationStrength: 5
   alignmentStrength: 5
   cohesionStrength: 5
-  targetStrength: 0
-  objectAvoidanceStrength: 10
-  obstacleAvoidanceDistance: 5
-  turnSpeed: 10
+  targetStrength: 5
+  objectAvoidanceStrength: 50
+  obstacleAvoidanceDistance: 3
+  turnSpeed: 5
+  eatRange: 1.5

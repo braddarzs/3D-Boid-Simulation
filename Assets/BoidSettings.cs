@@ -3,7 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "BoidSettings", menuName = "Scriptable Objects/BoidSettings")]
 public class BoidSettings : ScriptableObject
 {
-
+    public float TurnRate = 8f;
     public float viewRadius = 5f;
     public float viewAngle = 120f;
     public float minSpeed = 3f;
@@ -16,6 +16,6 @@ public class BoidSettings : ScriptableObject
     public float objectAvoidanceStrength = 5f;
     public float obstacleAvoidanceDistance = 3f;
     public float turnSpeed = 10f;
-
+    public float eatRange = 3f;
 
 }

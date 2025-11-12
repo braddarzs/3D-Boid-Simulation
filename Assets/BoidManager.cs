@@ -10,7 +10,6 @@ public class BoidManager : MonoBehaviour
     const int threadGroupSize = 1024;
     public Boid[] boids;
     public ComputeShader computeShader;
-    public GameObject targetCube;
 
     [Header("Boid Variables")]
     ComputeBuffer boidBuffer;
@@ -36,6 +35,17 @@ public class BoidManager : MonoBehaviour
 
     private void Update()
     {
+
+        GameObject[] boidObjects = GameObject.FindGameObjectsWithTag("Boid");
+        boids = new Boid[boidObjects.Length];
+
+        for (int i = 0; i < boids.Length; i++)
+        {
+            boids[i] = boidObjects[i].GetComponent<Boid>();
+        }
+
+        BoidData[] boidData = new BoidData[boids.Length];
+
         for (int i = 0; i < boids.Length; i++)
         {
             Boid boid = boids[i];

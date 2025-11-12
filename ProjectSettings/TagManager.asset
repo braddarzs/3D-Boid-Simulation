@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Magnet
   - Boid
+  - BoidManager
+  - Food
   layers:
   - Default
   - TransparentFX
@@ -16,7 +18,7 @@ TagManager:
   - Predator
   - Obstacle
   - ApexPredator
-  - 
+  - BoidObstacle
   - 
   - 
   - 
