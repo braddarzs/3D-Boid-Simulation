@@ -17,12 +17,12 @@ MonoBehaviour:
   viewAngle: 250
   minSpeed: 2
   maxSpeed: 7
-  seperationRange: 2
-  separationStrength: 5
-  alignmentStrength: 5
-  cohesionStrength: 5
+  seperationRange: 1
+  separationStrength: 2
+  alignmentStrength: 1
+  cohesionStrength: 1
   targetStrength: 5
   objectAvoidanceStrength: 50
-  obstacleAvoidanceDistance: 3
+  obstacleAvoidanceDistance: 5
   turnSpeed: 5
   eatRange: 1.5

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: NorthMagnet
   m_EditorClassIdentifier: 
   pole: 0
-  magneticForce: 15.47
+  magneticForce: 29.9
