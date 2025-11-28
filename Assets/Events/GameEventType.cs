@@ -2,5 +2,6 @@
 
 public enum GameEventType
 {
-    FoodTriggered
+    FoodTriggered,
+    BoidSpawned
 }

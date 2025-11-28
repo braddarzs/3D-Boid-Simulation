@@ -16,26 +16,18 @@ public class BoidManager : MonoBehaviour
     int threadGroups;
     BoidData[] boidData;
 
-    private void Start()
+    private void OnEnable()
     {
-        GameObject[] boidObjects = GameObject.FindGameObjectsWithTag("Boid");
-        boids = new Boid[boidObjects.Length];
-
-        for(int i = 0; i < boids.Length; i++)
-        {
-            boids[i] = boidObjects[i].GetComponent<Boid>();
-        }
-        boidData = new BoidData[boids.Length];
-        int stride = Marshal.SizeOf(typeof(BoidData));
-        boidBuffer = new ComputeBuffer(boids.Length, stride);
-
-        threadGroups = Mathf.CeilToInt(boids.Length / (float)threadGroupSize);
-
+        EventBus.Subscribe(GameEventType.BoidSpawned, UpdateBoidList);
     }
 
-    private void Update()
+    private void OnDisable()
     {
+        EventBus.Unsubscribe(GameEventType.BoidSpawned, UpdateBoidList);
+    }
 
+    private void UpdateBoidList(GameEventData eventData)
+    {
         GameObject[] boidObjects = GameObject.FindGameObjectsWithTag("Boid");
         boids = new Boid[boidObjects.Length];
 
@@ -44,8 +36,20 @@ public class BoidManager : MonoBehaviour
             boids[i] = boidObjects[i].GetComponent<Boid>();
         }
 
-        BoidData[] boidData = new BoidData[boids.Length];
+        boidData = new BoidData[boids.Length];
 
+        if (boidBuffer != null)
+            boidBuffer.Release();
+
+        int stride = Marshal.SizeOf(typeof(BoidData));
+        boidBuffer = new ComputeBuffer(boids.Length, stride);
+        threadGroups = Mathf.CeilToInt(boids.Length / (float)threadGroupSize);
+    }
+
+
+    private void Update()
+    {
+        boids = Array.FindAll(boids, b => b != null);
         for (int i = 0; i < boids.Length; i++)
         {
             Boid boid = boids[i];

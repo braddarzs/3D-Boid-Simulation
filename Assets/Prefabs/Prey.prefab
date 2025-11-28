@@ -100,6 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boidManager: {fileID: 0}
+  velocity: {x: 0, y: 0, z: 0}
   boidSettings: {fileID: 11400000, guid: 9d6c96375ed893f49be51fad86102e64, type: 2}
   separationForce: {x: 0, y: 0, z: 0}
   alignmentForce: {x: 0, y: 0, z: 0}
@@ -110,3 +111,7 @@ MonoBehaviour:
     m_Bits: 964
   boidType: 1
   target: {fileID: 0}
+  canEat: 1
+  predatorLayer:
+    serializedVersion: 2
+    m_Bits: 64

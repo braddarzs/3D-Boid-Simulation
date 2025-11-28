@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -6,8 +7,8 @@ using UnityEngine.UIElements;
 
 public class Boid : MonoBehaviour
 {
-    [SerializeField] BoidManager boidManager;
-    Vector3 velocity;
+    public BoidManager boidManager;
+    public Vector3 velocity;
     public BoidSettings boidSettings;
     public Vector3 separationForce = Vector3.zero;
     public Vector3 alignmentForce = Vector3.zero;
@@ -16,6 +17,15 @@ public class Boid : MonoBehaviour
     public LayerMask obstacleLayer;
     public int boidType;
     public GameObject target;
+    public bool canEat;
+    public LayerMask predatorLayer;
+
+    private static readonly Collider[] predatorBuffer = new Collider[5];
+
+    private void Awake()
+    {
+        boidManager = GameObject.FindGameObjectWithTag("BoidManager").GetComponent<BoidManager>();
+    }
 
     private void OnEnable()
     {
@@ -27,8 +37,10 @@ public class Boid : MonoBehaviour
         EventBus.Unsubscribe(GameEventType.FoodTriggered, UpdateTarget);
     }
 
-    private void UpdateTarget(GameEventData eventData)
+    public virtual void UpdateTarget(GameEventData eventData)
     {
+
+        if (target != null) return;
         GameObject[] allFood = GameObject.FindGameObjectsWithTag("Food");
 
         if (allFood.Length == 0) 
@@ -54,7 +66,7 @@ public class Boid : MonoBehaviour
         target = closestFood;
     }
 
-    private void TryEatFood()
+    public virtual void TryEatFood()
     {
         if (target == null) return;
 
@@ -64,22 +76,44 @@ public class Boid : MonoBehaviour
         if (sqrDist <= eatRangeSqr)
         {
             Destroy(target);
+            StartCoroutine(EatCooldown());
         }
+    }
+
+    public IEnumerator EatCooldown()
+    {
+        canEat = false;
+        yield return new WaitForSeconds(boidSettings.eatCooldown);
+        canEat = true;
     }
 
 
     public void UpdateBoid()
     {
-        UpdateTarget(null);
-        TryEatFood();
+        if(canEat)
+        {
+            UpdateTarget(null);
+            TryEatFood();
+        } else target = null;
+
         Vector3 desiredDirection = Vector3.zero;
         //Initial Direction
         if (target != null) desiredDirection = (target.transform.position - transform.position).normalized * boidSettings.targetStrength;
 
         if (desiredDirection == Vector3.zero) desiredDirection = transform.forward;
 
-        if(neighborCount > 0)
+
+        int count = Physics.OverlapSphereNonAlloc(transform.position,boidSettings.predatorRange,predatorBuffer,predatorLayer);
+        for (int i = 0; i < count; i++)
         {
+            Collider hit = predatorBuffer[i];
+            Vector3 away = (transform.position - hit.transform.position).normalized * boidSettings.predatorStrength;
+            desiredDirection += away;
+        }
+
+        if (neighborCount > 0)
+        {
+
             //Seperation
             Vector3 seperation = separationForce / neighborCount;
             if (seperation != Vector3.zero)
@@ -104,12 +138,18 @@ public class Boid : MonoBehaviour
                 Vector3 cohesion = toCenter.normalized * boidSettings.cohesionStrength;
                 desiredDirection += cohesion;
             }
+
         }
 
         //Obstacle Avoidance
         if (isDirectionObstructed(desiredDirection))
         {
-            desiredDirection = ObjectAvoidanceDirection(desiredDirection, 30); //.normalized * boidSettings.objectAvoidanceStrength;
+            Vector3 newDirection = ObjectAvoidanceDirection(desiredDirection, 7);
+            if(isDirectionObstructed(newDirection))
+            {
+                newDirection = ObjectAvoidanceDirection(newDirection, 40);
+            }
+            desiredDirection = newDirection; //.normalized * boidSettings.objectAvoidanceStrength;
         }
 
         desiredDirection.Normalize();
@@ -125,9 +165,8 @@ public class Boid : MonoBehaviour
 
         transform.position += velocity * Time.deltaTime;
 
-        Vector3 lookDirection = velocity  * Time.deltaTime;
-        Quaternion targetRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Mathf.Clamp01(boidSettings.TurnRate * Time.deltaTime));
+        Quaternion targetRotation = Quaternion.LookRotation(dir, Vector3.up);
+        transform.rotation = Quaternion.Slerp(transform.rotation,targetRotation,Mathf.Clamp01(boidSettings.TurnRate * Time.deltaTime));
     }
 
     private bool isDirectionObstructed(Vector3 desiredDir)

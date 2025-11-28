@@ -13,14 +13,7 @@ public class MagnetHandler : MonoBehaviour
 
     void Start()
     {
-        magnets = new List<Magnet>();
-
-        GameObject[] magnetObjects = GameObject.FindGameObjectsWithTag("Magnet");
-
-        foreach (GameObject magnet in magnetObjects)
-        {
-            magnets.Add(magnet.GetComponent<Magnet>());
-        }
+        
     }
 
     Vector3 GetMagnetForce(Magnet magnet, Magnet otherMagnet) //Uses Gilberts foruma
@@ -42,6 +35,16 @@ public class MagnetHandler : MonoBehaviour
 
     void FixedUpdate()
     {
+        magnets = new List<Magnet>();
+
+        GameObject[] magnetObjects = GameObject.FindGameObjectsWithTag("Magnet");
+
+        foreach (GameObject magnet in magnetObjects)
+        {
+            magnets.Add(magnet.GetComponent<Magnet>());
+        }
+
+
         for (int i = 0; i < magnets.Count; i++)
         {
             var m1 = magnets[i];
@@ -69,7 +72,7 @@ public class MagnetHandler : MonoBehaviour
             {
                 magnet1Force = magnet1Force.normalized * MaxForce;
             }
-            magnet1Rigidbody.AddForceAtPosition(magnet1Force, m1.transform.position);
+            magnet1Rigidbody.AddForce(magnet1Force);
         }
     }
 }

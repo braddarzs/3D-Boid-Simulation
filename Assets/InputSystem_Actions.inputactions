@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "InputSystem_Actions",
     "maps": [
         {
@@ -6,7 +7,7 @@
             "id": "df70fa95-8a34-4494-b137-73ab6b9c7d37",
             "actions": [
                 {
-                    "name": "Move",
+                    "name": "FishingHorizontal",
                     "type": "Value",
                     "id": "351f2ccd-1f9f-44bf-9bec-d62ac5c5f408",
                     "expectedControlType": "Vector2",
@@ -85,6 +86,51 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "FishingUp",
+                    "type": "Button",
+                    "id": "494592ea-9c3e-49fa-932c-bf116b33297a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "FishingDown",
+                    "type": "Button",
+                    "id": "67b6f1c6-6d82-45aa-b750-7f8e5b9c21e6",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CameraToggle",
+                    "type": "Button",
+                    "id": "5ddfe334-5a49-4499-bb05-fc27404e6045",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SpawnFish",
+                    "type": "Button",
+                    "id": "cbfa33be-311c-4ffd-b489-1e27be328128",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SpawnShark",
+                    "type": "Button",
+                    "id": "69fc8f38-b756-45dd-abda-20cf8432d1d6",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -95,7 +141,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "Move",
+                    "action": "FishingHorizontal",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -106,7 +152,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "FishingHorizontal",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -117,7 +163,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Move",
+                    "action": "FishingHorizontal",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -128,7 +174,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Move",
+                    "action": "FishingHorizontal",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -139,7 +185,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Move",
+                    "action": "FishingHorizontal",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -150,7 +196,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Move",
+                    "action": "FishingHorizontal",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -161,7 +207,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Move",
+                    "action": "FishingHorizontal",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -172,7 +218,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Move",
+                    "action": "FishingHorizontal",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -183,7 +229,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Move",
+                    "action": "FishingHorizontal",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -194,7 +240,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Move",
+                    "action": "FishingHorizontal",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -205,7 +251,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "XR",
-                    "action": "Move",
+                    "action": "FishingHorizontal",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -216,7 +262,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Joystick",
-                    "action": "Move",
+                    "action": "FishingHorizontal",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -470,6 +516,61 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Crouch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b0093ddd-ea1f-4878-ad44-6521ec05d7b7",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FishingUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "87e3d525-41a0-4610-bd3a-fd1ce1f3c697",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FishingDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "42dee997-b8a2-4f07-96aa-229454577702",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f752d08f-51ca-4763-bb89-c2222167a73c",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SpawnFish",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e012e3d0-3487-4b54-bbe1-fba21954a872",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SpawnShark",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

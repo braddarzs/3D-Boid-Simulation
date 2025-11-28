@@ -17,5 +17,7 @@ public class BoidSettings : ScriptableObject
     public float obstacleAvoidanceDistance = 3f;
     public float turnSpeed = 10f;
     public float eatRange = 3f;
-
+    public float eatCooldown = 2f;
+    public float predatorRange = 3f;
+    public float predatorStrength = 5f;
 }
