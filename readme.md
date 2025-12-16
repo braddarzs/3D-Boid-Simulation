@@ -1,101 +1,107 @@
-![games_academy_logo](https://github.falmouth.ac.uk/J-Dawes/blank-unity-project/assets/1961/fee20182-78e7-459f-ae86-69016a0b7424)
 
-![unity logo](https://github.falmouth.ac.uk/J-Dawes/blank-unity-project/assets/1961/9af69d3c-f8e1-43fb-8ecb-5ce890cf8a37)
+# Worksheet 3
 
-## Blank Unity Engine Project
-
-https://github.falmouth.ac.uk/Games-Academy/blank-unity-project Authored by Falmouth Games Academy.
-
-## Table of contents
-
-1. [Project Description](#project-description)
-
-2. [Project Dependencies](#project-dependencies)
-
-3. [Instructions for use](#instructions-for-using-the-unity-engine-template)
-
-4. [Using the template](#using-the-template)
-
-5. [Troubleshooting Guide](#troubleshooting-guide)
-
-6. [Contributing guidelines](#contributing-guidelines)
-
-7. [How to get help](#how-to-get-help)
-
-8. [Terms of use](#terms-of-use)
+## Implementation
 
 
-## Project description
+### Compute Shader
 
-This template has been created to enable the creation and versioning of Unity engine projects. This template features a pre-configured .gitignore and .gitattributes to ensure the project is correctly stored on our GIT server.
+A compute shader was implemented in this iteration to process the boid movement logic on the GPU.
+Each GPU thread processes a single boid, identified by its dispatch thread ID.
 
-## Starting a Unity project
+#### Neighbour Calculation
 
-Before using this template, ensure you have:
+First, the distance between the current boid and another boid is calculated using the vector offset between their positions:
+```csharp
+float3 offset = currentBoid.position - other.position;
+float dist = length(offset);
+```
+Boids that are either at zero distance or outside the view radius are ignored:
+```csharp
+if (dist == 0 || dist > currentBoid.viewRadius)
+    continue;
+```
+This is to ensure that only boids within a specified proximity of the boid are used to calculate its final force.
 
-* Installed a GIT client on your machine. (We recommend [Fork](https://git-fork.com/))
-* Downloaded the [Unity Hub](https://unity.com/products) on your machine.
-* Downloaded the Unity engine editor version currently supported. (Please see the [GA software list](https://github.com/Falmouth-Games-Academy/ga-software-list) for further information on the currently supported version)
+Additionally, the angle between the boid’s forward direction and the direction toward another boid is computed using the dot product:
+```csharp
+float angle = degrees(acos(dot(normalize(currentBoid.direction), normalize(offset))));
+```
+If the angle exceeds half of the boid’s total view angle, the neighbour is ignored, as shown below. The angle is halfed due to the angle calculated being relative to the boids foward direction, meaning it needs to negative to the left of foward and positive to the right.
 
-## Instructions for using the Unity Engine Template
+```csharp
+if (angle > currentBoid.viewAngle * 0.5f)
+    continue;
+```
+This is to ensure that only boids within a specified cone from the boids foward direction are used to calculate its final force. 
 
-Get started with this template by clicking 'Use This Template' or by selecting it in the options on the repo creation page.
+Boids within both the view range and angle are treated as a neighbour.
 
-### Using the template
+#### Forces calculation
 
-As the template is mostly pre configured you only need to apply minimal setup to best utilise this template.
+Seperation, cohesion and alignment forces are then calculated:
 
-1. Make sure when creating your Unity Engine project to put all the source  files in the project folder into the 'Game' folder in the repo.
-2. Ensure the .gitignore and .gitattributes files are present in the same folder as the project files.
+- Seperation- For each neighbour, if it is within the separation range, a repulsive force is added in the opposite direction, scaled by distance, to the seperation force.
+```csharp
+currentBoid.seperationForce += normalize(offset) / dist;
+```
+- Cohesion- The position of each neighbour is added to the cohesion force:
+```csharp
+currentBoid.cohesionForce += other.position;
+```
 
-### Troubleshooting Guide
+- Alignment- For each neighbour, the neighbour’s forward direction is added to the alignment force accumulator:
+```csharp
+currentBoid.alignmentForce += normalize(other.direction);
+```
 
-<table>
-  <tr>
-   <td>
-    Issue
-   </td>
-   <td>
-    Solution
-   </td>
-  </tr>
-  <tr>
-   <td>
-    My project isn't versioning properly.
-   </td>
-   <td>
-    Ensure you have the .gitignore and .gitattributes file in the correct place according to the template. 
-   </td>
-  </tr>
-  <tr>
-   <td>
-    I can't push my changes, and keep getting an error message saying my files are too large.
-   </td>
-   <td>
-    Ensure you have the .gitignore and .gitattributes files in the correct place according to the template.
-       Check that the file type you are having trouble with is accounted for in the .gitignore or .gitattributes files.
-   </td>
-  </tr>
-  <tr>
-   <td>
-    I can't use this template
-   </td>
-   <td>
-    Please contact games.support@falmouth.ac.uk as this may be an issue with permissions.
-   </td>
-  </tr>
-</table>
+### Boid Manager
 
-## Contributing guidelines
+A BoidManager class is used to send/recieve data to/from the compute shader. It first sets up a ComputeBuffer, which is the length of the boids array that is pre-set before run-time, with the stride of a custom BoidData struct.
 
-If you have any suggestions for improving this template please feel free to either submit a pull request or contact games.support@falmouth.ac.uk
+BoidData contains the: Position, direction, view radius, view angle, seperation range and boid type of the boid.
 
-## How to get help
+A boidData array is then initialized, with the size of the number of boids. Then, each frame, every element of the boidData array is set to the corresponding data for a boid and then the boidData array is dispatched to the compute shader and the results are read. The number of thread groups is calculated by the formula shown below.
 
-If you are experiencing trouble using this template please contact the games academy support desk at games.support@falmouth.ac.uk
+```csharp
+const int threadGroupSize = 1024;
+int threadGroups;
 
-## Terms of use
+threadGroups = Mathf.CeilToInt(boids.Length / (float)threadGroupSize);
+```
+The BoidManager then sets the boids parameters to the data read from the shader, and the function UpdateBoid() is called on the boid's Boid script, to update it.
 
-The blank-unity-project is unlicensed. Please add your details and a license of your preference to the license file once you have created your repo.
+### Boid
 
----
+The Boid class is used to move the boid. Once the BoidManager calls UpdateBoid(), an intial direction of the boids foward direction is set to a vector called desiredDirection. UpdateBoid() then uses the seperation, cohesion and alignment forces recieved from the BoidManager by normalizing them, multiplying them by a scalar for customizable boid logic and then adding the result to the desiredDirection vector.
+```csharp
+if (desiredDirection == Vector3.zero) desiredDirection = transform.forward;
+
+//Seperation 
+desiredDirection += (separationForce.normalized) * boidSettings.separationStrength;
+
+//Alignment
+desiredDirection += (alignmentForce.normalized) * boidSettings.alignmentStrength;
+
+//Cohesion
+Vector3 averageNeighbourPos = cohesionForce / neighborCount;
+desiredDirection += ((averageNeighbourPos - transform.position).normalized) * boidSettings.cohesionStrength;
+```
+The obstacle avoidance force is then calculated, which 
+
+## Optimization
+![unity logo](Images/PerformanceAfter.png)
+
+
+After the compute shader optimization, performance increased significantly, allowing for over 1000 boids at over 100fps, as shown below. This is a 20x improvement in performance, going from 7500 boid updates per second to 150,000 boid updates per second.
+![unity logo](Images/FPSAfter.png)
+
+Additionally, the computational strain on the CPU was dramatically reduced, bringing it in line with the GPU, with both the CPU and GPU harbouring roughly a 6.5ms frame time, as shown below. The frame time achieved is much better than the goal set for this iteration, showing glowing results from using the GPU to offload computation from the CPU.
+![unity logo](Images/CPUtimeAfter.png)
+
+The total main thread usage of the BoidManager update function also dropped from 75% to 33%, as shown below. This allows for additional features to be added in the next iteration, while still maintaining good performance.
+![unity logo](Images/PercentageAfter.png)
+
+## Next Iteration
+
+Visual improvements, user interaction, controllable magnet?
