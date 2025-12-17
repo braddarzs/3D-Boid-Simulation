@@ -104,4 +104,18 @@ The total main thread usage of the BoidManager update function also dropped from
 
 ## Next Iteration
 
-Visual improvements, user interaction, controllable magnet?
+In the next iteration, significant improvements to the visuals will be implemented. Models will be created for the fish, obstacles, surrounding walls and additional fauna to create a more convincing underwater environment. The models will be created in MagicaVoxel, which is a 3D voxel editor, due to the ease of creating models. Then, the models will be passed through SmoothVoxel, a voxel-smoothing software available online. This will be done to create better looking models, with a slight hinderence on performance, however due to the performance of the artifact currently, this is possible. However, to optimize the models, they will then be passed through Blender, a 3D modelling software, to reduce geometry. Work will also be done to the Unity lighting, creating ambience with fog and other settings.
+
+As well as visuals, user interaction will also be implemented. Currently, there is no user interaction in the artifact. In the next iteration, these user interactions will be added:
+
+### Camera movement
+
+The camera will be controllable by the user, with the option to lock and unlock the camera. The camera will be moved with WASD for intuitive controls, and TAB to switch between locked and unlocked camera.
+
+### Food Spawning
+
+Functionality for food will be implemented, where boids will chase the nearest food that is in the scene, and will eat the food when it gets close enough. This will be added as a seperate force to the boids movement calculation. The food will be spawned in by the player by clicking anywhere in the scene.
+
+### Boid and Predator Spawning
+
+Predators will be implemented in the next iteration, chasing boids around the scene and eating them if they get close. Additionally, the boids will avoid the predators, added as a seperate force in the boids movement calculation. Predators and boids will be spawned in on scene load, and then can be spawned by the player infinitly, with respective keybinds. 
