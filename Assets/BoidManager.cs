@@ -33,33 +33,6 @@ public class BoidManager : MonoBehaviour
         }
     }
 
-    /*
-    private void Update()
-    {
-        int numBoids = boids.Count;
-
-        BoidData[] boidData = new BoidData[numBoids];
-
-        for(int i = 0; i < numBoids; i++)
-        {
-            boidData[i].position = boids[i].transform.position;
-            boidData[i].direction = boids[i].transform.forward;
-        }
-
-        ComputeBuffer boidBuffer = new ComputeBuffer(numBoids, 64);
-        boidBuffer.SetData(boidData);
-        computeShader.SetBuffer(0, "boids", boidBuffer);
-        computeShader.SetInt("numBoids", boids.Count);
-        computeShader.SetFloat("viewRadius", viewRadius);
-        computeShader.SetFloat("viewAngle", viewAngle);
-        computeShader.SetFloat("seperationRadius", seperationRange);
-
-        int threadGroups = Mathf.CeilToInt(numBoids / (float)threadGroupSize);
-        compute.Dispatch(0, threadGroups, 1, 1);
-
-        boidBuffer.GetData(boidData);
-    }
-    */
 
     private void OnDrawGizmosSelected()
     {
