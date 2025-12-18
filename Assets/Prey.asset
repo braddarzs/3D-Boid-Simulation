@@ -17,7 +17,7 @@ MonoBehaviour:
   minSpeed: 3
   maxSpeed: 7
   seperationRange: 2
-  separationStrength: -8.3
+  separationStrength: 5
   alignmentStrength: 5
   cohesionStrength: 5
   targetStrength: 0
