@@ -1,0 +1,10 @@
+﻿  main.cpp
+H:\fORK\Comp305--Magnet\COMP220-Code-Examples\main.cpp(399,45): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+H:\fORK\Comp305--Magnet\COMP220-Code-Examples\main.cpp(282,12): warning C4101: 'mvp': unreferenced local variable
+  Shader.cpp
+  Generating Code...
+  COMP220-Code-Examples.vcxproj -> H:\fORK\Comp305--Magnet\x64\Debug\COMP220-Assignment.exe
+          1 file(s) copied.
+          1 file(s) copied.
+          1 file(s) copied.
+  0 File(s) copied
