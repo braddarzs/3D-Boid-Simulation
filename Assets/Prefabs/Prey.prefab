@@ -108,7 +108,7 @@ MonoBehaviour:
   neighborCount: 0
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 964
+    m_Bits: 5060
   boidType: 1
   target: {fileID: 0}
   canEat: 1

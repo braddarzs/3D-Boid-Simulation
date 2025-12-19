@@ -101,6 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boidManager: {fileID: 0}
+  velocity: {x: 0, y: 0, z: 0}
   boidSettings: {fileID: 11400000, guid: 7d08d865b98f97a44928d07390c6c1aa, type: 2}
   separationForce: {x: 0, y: 0, z: 0}
   alignmentForce: {x: 0, y: 0, z: 0}
@@ -108,9 +109,13 @@ MonoBehaviour:
   neighborCount: 0
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 644
+    m_Bits: 4740
   boidType: 2
   target: {fileID: 0}
+  canEat: 0
+  predatorLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!65 &1400544027181920983
 BoxCollider:
   m_ObjectHideFlags: 0

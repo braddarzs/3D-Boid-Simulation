@@ -130,7 +130,7 @@ MonoBehaviour:
   neighborCount: 0
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 900
+    m_Bits: 4996
   boidType: 0
   target: {fileID: 0}
   canEat: 1
