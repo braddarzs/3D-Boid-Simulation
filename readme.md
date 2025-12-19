@@ -31,7 +31,7 @@ The algorithm checks against every other boid, therefore every boid checks every
 
 ![FPS](Images/FPSBefore.png)
 
-
+## Next Iteration
 
 The plan is to support over 1000 active boids while maintaining a frame rate above 60 FPS. To achieve this, the next iteration of the project will focus on optimizing the boid movement algorithm. The main optimization will be offloading the movement calculations to the GPU using a compute shader. By executing these calculations in parallel outside the main rendering pipeline, the overall performance of the simulation should improve overall performance significantly. 
 
