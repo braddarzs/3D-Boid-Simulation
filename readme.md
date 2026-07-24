@@ -4,7 +4,7 @@ A real-time 3D Boids Simulation built in Unity using custom-made assets and alog
 
 [Download on itch.io](https://braddarzs.itch.io/boids-simulation)· [View the scientific poster](docs/BoidsPoster.pdf) · [Explore the development branches](#development-branches)
 
-![Underwater boids simulation](docs/images/Boids!) ![Underwater boids simulation2](docs/images/Boids)
+![Underwater boids simulation](docs/images/Boids!.png) ![Underwater boids simulation2](docs/images/Boids.png)
 
 ## Overview
 
@@ -21,6 +21,14 @@ The result is a responsive simulation of **1,000+ boids at over 100 FPS**—appr
 
 **Tech:** Unity · C# · HLSL
 
+## Development branches
+
+| Branch | Focus |
+| --- | --- |
+| [`Worksheet-2`](https://github.com/braddarzs/3D-Boid-Simulation/tree/Worksheet-2) | CPU prototype, research and profiling |
+| [`Worksheet-3`](https://github.com/braddarzs/3D-Boid-Simulation/tree/Worksheet-3) | Compute-shader optimisation and obstacle avoidance |
+| [`Worksheet-4`](https://github.com/braddarzs/3D-Boid-Simulation/tree/Worksheet-4) | Underwater environment and player interaction |
+
 ## Controls
 
 | Input | Action |
@@ -31,11 +39,4 @@ The result is a responsive simulation of **1,000+ boids at over 100 FPS**—appr
 | Left click | Spawn food |
 | `F` / `S` | Spawn fish / sharks |
 
-
-## Development branches
-
-| Branch | Focus |
-| --- | --- |
-| [`Worksheet-2`](https://github.com/braddarzs/3D-Boid-Simulation/tree/Worksheet-2) | CPU prototype, research and profiling |
-| [`Worksheet-3`](https://github.com/braddarzs/3D-Boid-Simulation/tree/Worksheet-3) | Compute-shader optimisation and obstacle avoidance |
-| [`Worksheet-4`](https://github.com/braddarzs/3D-Boid-Simulation/tree/Worksheet-4) | Underwater environment and player interaction |
+![Underwater boids simulation](docs/images/boidsFirst.png)
