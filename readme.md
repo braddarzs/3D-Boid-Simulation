@@ -4,7 +4,7 @@ A real-time 3D Boids Simulation built in Unity using custom-made assets and alog
 
 [Download on itch.io](https://braddarzs.itch.io/boids-simulation)· [View the scientific poster](docs/BoidsPoster.pdf) · [Explore the development branches](#development-branches)
 
-![Underwater boids simulation](put-here)
+![Underwater boids simulation](docs/images/Boids!) ![Underwater boids simulation2](docs/images/Boids)
 
 ## Overview
 
